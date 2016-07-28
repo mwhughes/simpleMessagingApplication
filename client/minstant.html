@@ -1,0 +1,158 @@
+<head>
+  <title>minstant</title>
+  <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.min.css" >
+  <script type="text/javascript">
+     $(document).ready(function() {
+        $(".convert-emoji").each(function() {
+            var original = $(this).html();
+            // use .shortnameToImage if only converting shortnames (for slightly better performance)
+            var converted = emojione.toImage(original);
+            $(this).html(converted);
+        });
+    });
+</script>
+</head>
+
+<body>
+</body>
+
+
+<!-- this is the main template used by iron:router to build the page -->
+<template name="ApplicationLayout">
+	{{> yield "header"}}
+	
+	<div class="container">
+	{{> yield "main"}}
+	</div>
+</template>
+
+<!-- top level template for the nav bar -->
+<template name="navbar">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">
+        Minstant!
+      </a>
+    </div>
+    <div class="nav navbar-nav">
+    {{> loginButtons}}
+</div>
+  </div>
+</nav>
+</template>
+
+<!-- Top level template for the lobby page -->
+<template name="lobby_page">
+	{{> available_user_list}}
+</template>
+
+<!-- display a list of users -->
+<template name="available_user_list">
+	{{#if currentUser }}<!-- You're logged in! -->
+  
+	<h2>Choose someone to chat with:</h2>
+	<div class="row user_row_css">
+	
+
+	{{#each users}}
+	{{> available_user}}
+	{{/each}}
+	</div>
+	{{else}}
+	<h1> Login to connect with other users! </h1>
+	{{/if}}
+</template>
+
+<!-- display an individual user -->
+<template name="available_user">
+
+	<div class="col-xs-6 col-sm-4 col-md-2 user_css">
+		<div class="user_avatar">
+		<div class="well well-md avatar_wrapper">
+		{{#if isMyUser _id}} 
+			
+				{{getUsername _id}} (YOU)
+				<br/>
+			
+				<img src="/{{profile.avatar}}" class="avatar_img center-block">
+			
+			{{else}}
+			<a href="/chat/{{_id}}">
+				{{getUsername _id}}
+				<br/>
+			
+				<img src="/{{profile.avatar}}" class="avatar_img center-block">
+			</a>
+			{{/if}}
+			</div>
+		</div>
+	</div>
+</template>
+
+
+<!-- Top level template for the chat page -->
+<template name="chat_page">
+	<h4>Hi {{this_user}}! You are chatting with {{other_user}}. </h4>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="well well-lg chat_well" style= "overflow-y: scroll;  max-height: 45vh;">
+			<br>
+			{{#each messages}}
+			{{> chat_message}}
+			{{/each}}
+			</div>	
+		</div>
+	</div>
+    <div class="row">
+		<div class="col-md-12">
+		<form class="js-send-chat">
+		{{#emojione}}
+		<textarea class="input input-js convert-emoji" type="text" name="chat" placeholder="type a message here..." style = "min-height: 5vh; width: 100%; max-width: 100%; min-width:100%">  </textarea> 
+		<div>
+		
+			<button class="btn btn-default">send</button> <button class="btn btn-default" data-toggle="collapse" data-target="#demo">Click for Emoticons</button>
+
+
+			
+		</div>
+		{{/emojione}}
+		<div style ="margin-top: 15px" id="demo" class="collapse well well-lg">
+		{{> emoticon_box}}
+		</div>
+		
+		</form>
+			
+		</div>
+	</div>
+</template>
+
+<!-- simple template that displays a message -->
+<template name="chat_message">
+	<div style="width:98%; margin-top: -30px; margin-left: auto; margin-right: auto; word-wrap: break-word;">
+	 <b>{{#with getUsername userIDVal }}  
+	 <img src="/{{avatar}}" class="avatar_img  img_message">
+	  {{username}} {{/with}} 
+
+
+	 said:</b> &nbsp; {{#emojione}}  {{ text }} {{/emojione}}
+	
+	 </div>
+	 <br>
+	<br>
+</template>
+
+<template name="emoticon_box">
+	<div class = "row">
+		<div class = "col-md-12">
+			
+			{{#each emoticonObjects}}
+				<span class="js-test-emoticon" data-emojiText="{{emotiName}}"> 	{{#emojione}}  {{emotiName}} {{/emojione}}</span> 
+			{{/each}}
+		</div>
+	</div>
+</template>
+
+<!-- :) :D ;) :( :beer: ;-) :o    -->
+
+

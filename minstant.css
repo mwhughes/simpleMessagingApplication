@@ -1,0 +1,31 @@
+/* CSS declarations go here */
+
+.user_avatar{
+	min-height:100px;
+	text-align: center;
+
+}
+.avatar_img{
+	height:75px;
+	
+}
+.img_message{
+	height: 35px;
+	width: auto;
+}
+
+.avatar_wrapper {
+  
+  
+}
+.row{
+    overflow: hidden; 
+}
+
+[class*="col-"]{
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
+}
+
+
+
